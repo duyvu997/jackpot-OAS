@@ -1,0 +1,247 @@
+Quiz:
+  type: object
+  properties:
+    name:
+      type: string
+    status:
+      type: string
+      enum: [DONE, NOT_DONE]
+
+Answer:
+  type: object
+  properties:
+    answerType:
+      type: string
+    answerContent:
+      type: string
+    subQuestionId:
+      type: number
+
+QuizSubmitForm:
+  type: object
+  properties:
+    userAnswers:
+      type: array
+      items:
+        - $ref: "#/Answer"
+  example:
+    userAnswers:
+      - answerType: TEXT
+        answerContent: textbook
+        subQuestionId: 1
+
+      - answerType: TEXT
+        answerContent: T
+        subQuestionId: 2
+
+      - answerType: NONE
+        answerContent: true
+        subQuestionId: 3
+
+QuizSubmitFormResponse:
+  type: object
+  properties:
+    averageScore:
+      type: number
+    ingredientsScore:
+      type: array
+      items:
+        type: object
+        properties:
+          ingredientType:
+            type: "string"
+            enum: [MATCHING, TRUE_OR_FALSE, COMPLETE_SENTENCE, CHOOSE_ANSWER]
+          ingredientScore:
+            type: number
+  example:
+    averageScore: 95
+    finishMessage: 'Chúc mừng'
+    ingredientsScore:
+      - ingredientType: MATCHING
+        ingredientName: Match the words with the school things
+        ingredientScore: 95
+      - ingredientType: TRUE_OR_FALSE
+        ingredientName: True or false
+        ingredientScore: 95
+      - ingredientType: COMPLETE_SENTENCE
+        ingredientName: Complete the sentences
+        ingredientScore: 95
+      - ingredientType: CHOOSE_ANSWER
+        ingredientName: Choose correct answers
+        ingredientScore: 95
+    details: 
+      - answerType: "TEXT"
+        answerContent: "rubber"
+        subQuestionId: 1
+        status: true
+        correctAnswer: "rubber" 
+      - answerType: "TEXT"
+        answerContent: "T"
+        subQuestionId: 7
+        status: false
+        correctAnswer: "F" 
+      - answerType: "NONE"
+        answerContent: "null"
+        subQuestionId: 12
+        status: true
+        correctAnswer: "null" 
+      - answerType: "TEXT"
+        answerContent: "judo"
+        subQuestionId: 20
+        status: false
+        correctAnswer: "science"
+      
+
+
+SubQuestion:
+  type: object
+  properties:
+    id:
+      type: number
+    puzzle:
+      type: object
+      properties:
+        puzzleContent:
+          type: string
+        puzzleType:
+          type: string
+          enum: [IMAGE, TEXT]
+    answers:
+      type: array
+      items:
+        type: object
+        properties:
+          answerContent:
+            type: string
+          answerType:
+            type: string
+            enum: [TEXT, BOOLEAN]
+          answerStatus:
+            type: string
+
+Question:
+  type: object
+  properties:
+    id:
+      type: number
+    questionTitle:
+      type: string
+    questionType:
+      type: string
+      enum: [MATCHING, TRUE_OR_FALSE, COMPLETE_SENTENCE, CHOOSE_ANSWER]
+    questionExtraData:
+      type: array
+      items:
+        type: object
+        properties:
+          content:
+            type: string
+          type:
+            type: string
+            enum: [MP3, VIDEO, IMAGE, TEXT]
+    subQuestions:
+      type: array
+      items:
+        - $ref: "#/SubQuestion"
+
+QuizDetail:
+  type: object
+  properties:
+    quizTitle:
+      type: string
+    acceptanceScore:
+      type: number
+    durations:
+      type: number
+      description: time in seconds
+    histories:
+      type: array
+      items:
+        type: object
+        properties:
+          timestamp:
+            type: string
+          completedPercent:
+            type: number
+          status:
+            type: string
+            enum: [UP, DOWN]
+    questions:
+      type: array
+      items:
+        - $ref: "#/Question"
+  example:
+    quizTitle: Match the words with the school things
+    durations: 3600
+    acceptanceScore: 70
+    histories:
+      - timestamp: "2020-11-11 13:40:58"
+        completedPercent: 100
+        status: UP
+      - timestamp: "2020-11-11 14:40:58"
+        completedPercent: 90
+        status: UP
+      - timestamp: "2020-11-11 15:40:58"
+        completedPercent: 80
+        status: UP
+    questions:
+      - id: 1
+        questionType: "MATCHING"
+        questionTitle: "Match the words with the school things"
+        questionExtraData:
+        subQuestions:
+          - id: 1
+            puzzle:
+              puzzleContent: "https://s3.us-east-2.amazonaws.com/37749d7b989e0c6.jpg"
+              puzzleType: IMAGE
+            answers:
+              - answerContent: book
+                answerType: TEXT
+                answerStatus: true // should not return.
+
+      - id: 2
+        questionType: "TRUE_OR_FALSE"
+        questionTitle: "True or false"
+        questionExtraData:
+          - content: https://s3.us-east-2.amazonaws.com/file-700KB.mp3
+            type: MP3
+        subQuestions:
+          - id: 12
+            puzzle:
+              puzzleContent: 1. Vy and Duy are early
+              puzzleType: TEXT
+            answers:
+              - answerContent: true
+                answerType: boolean
+                answerStatus: true // should not return.
+
+      - id: 3
+        questionType: "CHOOSE_ANSWER"
+        questionTitle: "True or false"
+        questionExtraData:
+          - content: https://s3.us-east-2.amazonaws.com/file-700KB.mp3
+            type: MP3
+        subQuestions:
+          - id: 12
+            puzzle:
+              puzzleContent: He goes to the juco club every Sunday
+              puzzleType: TEXT
+            answers:
+              - answerContent: true
+                answerType: boolean
+                answerStatus: true // should not return.
+      - id: 4
+        questionType: "COMPLETE_SENTENCE"
+        questionTitle: "True or false"
+        questionExtraData:
+          - content: [school, book, homework]
+            type: string
+        subQuestions:
+          - id: 15
+            puzzle:
+              puzzleContent: 1. I do ____________ with my friend,
+              puzzleType: TEXT
+            answers:
+              - answerContent:
+                answerType: TEXT
+                answerStatus: homework // should not return.

@@ -1,0 +1,817 @@
+---
+openapi: "3.0.0"
+info:
+  title: "Swagger Orange Juice"
+  version: "1.0.0"
+  description: "This is a APIs of Orange-Juice e-learning server."
+servers:
+  - url: https://orangejuicev2.herokuapp.com
+tags:
+  - name: User
+  - name: Course
+  - name: Quiz
+  - name: Auth
+  - name: Lesson
+  - name: Admin
+  - name: Parent
+paths:
+  #-----------PARENT------------------------------------------------------------------------------------------------------------------------------
+  /parent/children-statistics:
+    get:
+      tags:
+        - Parent
+      summary: Get all children statistics
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ParentStatistics"
+        400:
+          description: "Bad request"
+        404:
+          description: "Not found"
+  /parent/teachers:
+    get:
+      tags:
+        - Parent
+      summary: Get all teacher contact information
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeacherContactInfo"
+        400:
+          description: "Bad request"
+        404:
+          description: "Not found"
+  /parent/courses:
+    get:
+      tags:
+        - Parent
+      summary: Get all courses (which course children not registed)
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/offset"
+        - in: query
+          name: popular
+          schema:
+            type: boolean
+          required: false
+          description: "Get courses with tag popular."
+        - in: query
+          name: newest
+          schema:
+            type: boolean
+          required: false
+          description: "Get courses with tag newest"
+        - in: query
+          name: all
+          schema:
+            type: boolean
+          required: false
+          description: "Get courses with tag all"
+      responses:
+        200:
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CoursesResponse"
+        400:
+          description: "Bad request"
+        404:
+          description: "Not found"
+  /parent/children-courses:
+    get:
+      tags:
+        - Parent
+      summary: Get all children courses
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ParentChildrenCourse"
+        400:
+          description: "Bad request"
+        404:
+          description: "Not found"
+
+  #-----------ADMIN-------------------------------------------------------------------------------------------------------------------------------
+  /courses-management/accepted-members:
+    post:
+      tags:
+        - "Admin"
+      summary: Admin get approval to allow student to participate in to class.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AcceptedMemberBody"
+        required: true
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: "Successful operation"
+        400:
+          description: "Bad request"
+        404:
+          description: "Not found"
+    get:
+      tags:
+        - "Admin"
+      summary: Get all pending request
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RegisterToCourse"
+        400:
+          description: "Bad request"
+        404:
+          description: "Not found"
+  /courses-management/courses:
+    post:
+      tags:
+        - "Admin"
+      summary: Admin create new course.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCourse"
+        required: true
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: "Successful operation"
+        400:
+          description: "Bad request"
+        404:
+          description: "Not found" 
+    get:
+      tags:
+        - "Admin"
+      summary: Admin get all courses.
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminCourses"
+        400:
+          description: "Bad request"
+        404:
+          description: "Not found"
+
+  /courses-management/courses/{courseId}:
+    get:
+      tags:
+        - "Admin"
+      summary: Admin get all courses.
+      parameters:
+        - in: path
+          name: courseId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the course to get
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminCourseDetail"
+        400:
+          description: "Bad request"
+        404:
+          description: "Not found"
+  /courses-management/courses/{courseId}/lessons:
+    post:
+      tags:
+        - "Admin"
+      summary: Admin create lessons.
+      parameters:
+        - in: path
+          name: courseId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the course to get
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateLesson"
+        400:
+          description: "Bad request"
+        404:
+          description: "Not found"
+  /courses-management/courses/{courseId}/children: 
+    get:
+      tags:
+        - "Admin"
+      summary: Admin get all children of course by id.
+      parameters:
+        - in: path
+          name: courseId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the course to get
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminCourseChildren"
+        400:
+          description: "Bad request"
+        404:
+          description: "Not found"
+  /courses-management/courses/{courseId}/teachers: 
+    get:
+      tags:
+        - "Admin"
+      summary: Admin get all teachers of course by id.
+      parameters:
+        - in: path
+          name: courseId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the course to get
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminCourseTeachers"
+        400:
+          description: "Bad request"
+        404:
+          description: "Not found"
+  /verify-code:
+    post:
+      tags:
+        - "Auth"
+      summary: "Submit code to verify user by username."
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyCodeBody"
+        required: true
+      responses:
+        200:
+          description: "Successful operation"
+        400:
+          description: "Bad request"
+        404:
+          description: "Not found"
+  /reset-password:
+    post:
+      tags:
+        - "Auth"
+      summary: "Reset password"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResetPasswordBody"
+        required: true
+      responses:
+        200:
+          description: "Successful operation"
+        400:
+          description: "Bad request"
+        404:
+          description: "Not found"
+  /re-activate:
+    post:
+      tags:
+        - "Auth"
+      summary: "Resend email to activated"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResetPasswordBody"
+        required: true
+      responses:
+        200:
+          description: "Successful operation"
+        400:
+          description: "Bad request"
+        404:
+          description: "Not found"
+
+  #-----------USER--------------------------------------------------------------------------------------------------------------------------------
+  /users/children:
+    get:
+      tags:
+        - "User"
+      summary: Get all children users.
+      parameters:
+        - in: query
+          name: username
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChildrenUsers"
+  /users/statistics:
+    get:
+      tags:
+        - "User"
+      summary: Get statistics details of user
+      description: |
+        **Base on role of user in token this API will return the correct responses**
+        | Role | Response class |
+        |:---|:---|
+        |`CHILDREN`|`ChildStatistics`|
+        |`PARENT`|`ChildrenStatistics`|
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChildStatistics"
+        400:
+          description: "Bad request"
+        404:
+          description: "Not found"
+  /users:
+    get:
+      tags:
+        - User
+      summary: "Get user's information"
+      responses:
+        200:
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserInformation"
+        400:
+          description: "Bad request"
+        404:
+          description: "Not found"
+      security:
+        - bearerAuth: []
+    put:
+      tags:
+        - "User"
+      summary: "Update user"
+      description: "This can only be done by the logged in user."
+      operationId: "updateUser"
+      parameters:
+        - in: "path"
+          name: "username"
+          schema:
+            type: "string"
+          description: "name that need to be updated"
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+        description: "Updated user object"
+        required: true
+      responses:
+        400:
+          description: "Invalid user supplied"
+        404:
+          description: "User not found"
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+        - "User"
+      summary: "Delete user"
+      description: "This can only be done by the logged in user."
+      operationId: "deleteUser"
+      parameters:
+        - in: "path"
+          name: "username"
+          schema:
+            type: "string"
+          description: "The name that needs to be deleted"
+          required: true
+      responses:
+        400:
+          description: "Invalid username supplied"
+        404:
+          description: "User not found"
+      security:
+        - bearerAuth: []
+    post:
+      tags:
+        - "User"
+      summary: "Create user"
+      description: "This can only be done by the logged in user."
+      operationId: "createUser"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/User"
+                - type: object
+                  properties:
+                    dryrun:
+                      type: boolean
+                      description: when dryrun is `true` server should verify and return. should not create new object in db
+        description: "Created user"
+        required: true
+      responses:
+        default:
+          description: "Successful operation"
+  /users/login:
+    post:
+      tags:
+        - "User"
+      summary: "Logs user into the system"
+      description: ""
+      operationId: "loginUser"
+      requestBody:
+        required: true
+        description: "Login user input"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        200:
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+              example:
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwidXNlcm5hbWUiOiJqb2huMDkwOSIsImlhdCI6MTUxNjIzOTAyMn0.aj5KcumubmGe3Twtm7vLWbe7Ljt806Hj_OmqVsbjGVU \
+                Please decode for more information: using https://jwt.io/'
+        400:
+          description: "Invalid username/password supplied"
+  /users/change-password:
+    put:
+      tags:
+        - "User"
+      summary: User change password
+      description: This is api to allow user change password
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserChangePassword"
+      responses:
+        default:
+          description: "Successful operation"
+  /users/logout:
+    post:
+      tags:
+        - "User"
+      summary: "Logs out current logged in user session"
+      description: ""
+      responses:
+        default:
+          description: "Successful operation"
+      deprecated: true
+  /users/{username}/children:
+    get:
+      tags:
+        - "User"
+      parameters:
+        - in: path
+          name: username
+          schema:
+            type: string
+          required: true
+      summary: Get children of this user.
+      responses:
+        400:
+          description: "Invalid username supplied"
+        404:
+          description: "User not found"
+      security:
+        - bearerAuth: []
+      deprecated: true
+
+  #-----------COURSE------------------------------------------------------------------------------------------------------------------------------
+  /courses:
+    get:
+      tags:
+        - "Course"
+      summary: Get list of courses by each tags
+      parameters:
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/offset"
+        - in: query
+          name: by-user
+          schema:
+            type: boolean
+          required: false
+          description: "Get user name in token then find all courses of user."
+        - in: query
+          name: popular
+          schema:
+            type: boolean
+          required: false
+          description: "Get courses with tag popular."
+        - in: query
+          name: newest
+          schema:
+            type: boolean
+          required: false
+          description: "Get courses with tag newest"
+        - in: query
+          name: all
+          schema:
+            type: boolean
+          required: false
+          description: "Get courses with tag all"
+      responses:
+        200:
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CoursesResponse"
+        400:
+          description: "Bad request"
+        404:
+          description: "Courses not found"
+  /courses/{courseId}:
+    get:
+      tags:
+        - "Course"
+      summary: Get course details by ID
+      parameters:
+        - in: path
+          name: courseId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the course to get
+      responses:
+        200:
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CourseDetails"
+        400:
+          description: "Bad request"
+        404:
+          description: "Courses not found"
+  /courses/registration:
+    post:
+      tags:
+        - "Course"
+      summary: User registration for a Course
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        description: "Course information"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                courseId:
+                  type: number
+              example:
+                courseId: 12
+      responses:
+        200:
+          description: "Successful operation"
+        400:
+          description: "Bad request"
+        404:
+          description: "Courses not found"
+
+  #-----------LESSON------------------------------------------------------------------------------------------------------------------------------
+  /lessons/{lessonId}:
+    get:
+      tags:
+        - "Lesson"
+      summary: Get lesson details by ID
+      parameters:
+        - in: path
+          name: lessonId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the lesson to get
+      responses:
+        200:
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LessonDetails"
+        400:
+          description: "Bad request"
+        404:
+          description: "Courses not found"
+
+  #-----------QUIZ--------------------------------------------------------------------------------------------------------------------------------
+  /quizzes/{quizId}/submit:
+    post:
+      summary: Submit quiz result to server
+      tags:
+        - "Quiz"
+      parameters:
+        - in: path
+          name: quizId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the quiz to get
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QuizSubmitForm"
+      responses:
+        204:
+          description: "Successful operation - No content"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuizSubmitFormResponse"
+        400:
+          description: "Bad request"
+        404:
+          description: "Courses not found"
+  /quizzes/{quizId}:
+    get:
+      tags:
+        - "Quiz"
+      summary: Get quiz details
+      parameters:
+        - in: path
+          name: quizId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the quiz to get
+      responses:
+        200:
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuizDetail"
+        400:
+          description: "Bad request"
+        404:
+          description: "Courses not found"
+components:
+  #------------------------------------------------------------------#
+  schemas:
+    ##------------------------
+    User:
+      $ref: "./components/schemas/user.yml#/User"
+    UserInformation:
+      $ref: "./components/schemas/user.yml#/UserInformation"
+    ChildrenUsers:
+      $ref: "./components/schemas/user.yml#/ChildrenUsers"
+    ChildStatistics:
+      $ref: "./components/schemas/user.yml#/ChildStatistics"
+    ChildrenStatistics:
+      $ref: "./components/schemas/user.yml#/ChildrenStatistics"
+    UserChangePassword:
+      $ref: "./components/schemas/user.yml#/UserChangePassword"
+    ##------------------------
+    Course:
+      $ref: "./components/schemas/course.yml#/Course"
+    GeneralCourse:
+      $ref: "./components/schemas/course.yml#/GeneralCourse"
+    PersonalCourse:
+      $ref: "./components/schemas/course.yml#/PersonalCourse"
+    CoursesResponse:
+      $ref: "./components/schemas/course.yml#/CoursesResponse"
+    CourseDetails:
+      $ref: "./components/schemas/course.yml#/CourseDetails"
+    ##------------------------
+    Lesson:
+      $ref: "./components/schemas/lesson.yml#/Lesson"
+    LessonDetails:
+      $ref: "./components/schemas/lesson.yml#/LessonDetails"
+    LessonResource:
+      $ref: "./components/schemas/lesson.yml#/LessonResource"
+    ##------------------------
+    Quiz:
+      $ref: "./components/schemas/quiz.yml#/Quiz"
+    QuizSubmitForm:
+      $ref: "./components/schemas/quiz.yml#/QuizSubmitForm"
+    QuizSubmitFormResponse:
+      $ref: "./components/schemas/quiz.yml#/QuizSubmitFormResponse"
+    QuizDetail:
+      $ref: "./components/schemas/quiz.yml#/QuizDetail"
+    ##------------------------
+    AcceptedMemberBody:
+      $ref: "./components/schemas/admin.yml#/AcceptedMemberBody"
+    CreateCourse:
+      $ref: "./components/schemas/admin.yml#/CreateCourse"
+    RegisterToCourse:
+      $ref: "./components/schemas/admin.yml#/RegisterToCourse"
+    AdminCourses:
+      $ref: "./components/schemas/admin.yml#/AdminCourses"
+    AdminCourseDetail:
+      $ref: "./components/schemas/admin.yml#/AdminCourseDetail"
+    CreateLesson:
+      $ref: "./components/schemas/admin.yml#/CreateLesson"
+    AdminCourseChildren:
+      $ref: "./components/schemas/admin.yml#/AdminCourseChildren"
+    AdminCourseTeachers:
+      $ref: "./components/schemas/admin.yml#/AdminCourseTeachers"
+    ##------------------------
+    WeeklyHourAudit:
+      $ref: "./components/schemas/chart.yml#/WeeklyHourAudit"
+    ParentStatistics:
+      $ref: "./components/schemas/user.yml#/ParentStatistics"
+    ParentChildrenCourse:
+      $ref: "./components/schemas/user.yml#/ParentChildrenCourse"
+    TeacherContactInfo:
+      $ref: "./components/schemas/user.yml#/TeacherContactInfo"
+    ##------------------------
+    VerifyCodeBody:
+      $ref: "./components/schemas/auth.yml#/VerifyCodeBody"
+    ResetPasswordBody:
+      $ref: "./components/schemas/auth.yml#/ResetPasswordBody"
+    LoginResponse:
+      $ref: "./components/schemas/auth.yml#/LoginResponse"
+    LoginRequest:
+      $ref: "./components/schemas/auth.yml#/LoginRequest"
+    UserTokenSchema:
+      $ref: "./components/schemas/auth.yml#/UserTokenSchema"
+  #------------------------------------------------------------------#
+  parameters:
+    offset:
+      $ref: "./components/parameters/general-parameter.yml#/offset"
+    limit:
+      $ref: "./components/parameters/general-parameter.yml#/limit"
+  #------------------------------------------------------------------#
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  #------------------------------------------------------------------#
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
+externalDocs:
+  description: "More details"
+  url: "http://swagger.io"

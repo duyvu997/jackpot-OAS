@@ -1,0 +1,288 @@
+AcceptedMemberItem:
+  type: object
+  properties:
+    username:
+      type: string
+    status:
+      type: string
+      enum: [APPROVAL, DISAPPROVAL]
+    courseId:
+      type: number
+  example:
+    username: duyvu01
+    status: DISAPPROVAL
+    courseId: 10
+
+AcceptedMemberBody:
+  type: array
+  items:
+    - $ref: "#/AcceptedMemberItem"
+  example:
+    - username: duyvu01
+      status: DISAPPROVAL
+      courseId: 11
+    - username: duyvu02
+      status: APPROVAL
+      courseId: 10
+    - username: duyvu03
+      status: DISAPPROVAL
+      courseId: 9
+
+CreateCourse:
+  type: object
+  properties:
+    name:
+      type: string
+    duration:
+      type: number
+    startDate:
+      type: string
+    endDate:
+      type: string
+    schedule:
+      type: string
+    shortMessage:
+      type: string
+    description:
+      type: string
+    status:
+      type: string
+      enum: [PENDING, START, STOP]
+    minAge:
+      type: number
+    maxAge:
+      type: number
+    resources:
+      type: string
+  example:
+    name: Tieng Anh 1
+    duration: 1800
+    startDate: "30-04-2021"
+    endDate: "30-09-2021"
+    schedule: "M-w-F"
+    shortMessage: Tieng anh cho tre lam quen
+    description: Tieng anh cho tre lam quen se giup se de dang tiep can voi ngon ngu moi. Hinh anh sinh dong, Am thanh ngan de hieu.
+    status: PENDING
+    minAge: 5
+    maxAge: 9
+    resources: https://www.youtube.com/watch?v=NUTbnrD0iL4
+
+RegisterItem:
+  type: object
+  properties:
+    username:
+      type: string
+    courseId:
+      type: number
+
+RegisterToCourse:
+  type: array
+  items:
+    - $ref: "#/RegisterItem"
+  example:
+    - username: user 1
+      courseId: 1
+    - username: user 2
+      courseId: 1
+    - username: user 3
+      courseId: 2
+    - username: user 4
+      courseId: 3
+    - username: user 5
+      courseId: 2
+
+AdminCourse:
+  type: object
+  properties:
+    name:
+      type: "string"
+    duration:
+      type: "string"
+    members:
+      type: "integer"
+      format: "int32"
+    authors:
+      type: "string"
+    courseImageUrl:
+      type: "string"
+    teachers:
+      type: "number"
+
+AdminCourses:
+  type: array
+  items:
+    type: object
+    properties:
+      name:
+        type: "string"
+      duration:
+        type: "string"
+      members:
+        type: "integer"
+        format: "int32"
+      authors:
+        type: "string"
+      courseImageUrl:
+        type: "string"
+      teachers:
+        type: "number"
+      courses:
+        type: "number"
+      quizzes:
+        type: "number"
+      status:
+        type: "string"
+        enum: [ENABLE, DISABLE]
+  example:
+    - name: Tieng anh 6
+      duration: 1800
+      members: 50
+      authors: Duy Vu
+      courseImageUrl: "https://123.com"
+      teachers: 85
+      courses: 85
+      quizzes: 85
+      status: ENABLE
+    - name: Tieng anh 7
+      duration: 1800
+      members: 50
+      authors: Duy Vu
+      courseImageUrl: "https://123.com"
+      teachers: 85
+      courses: 85
+      quizzes: 85
+      status: DISABLE
+
+AdminCourseDetail: 
+  type: object
+  properties:
+    courseImageUrl:
+      type: "string"
+    name:
+      type: "string"
+    duration:
+      type: number
+      description: duration in minutes 
+    shortMessage:
+      type: string
+    description:
+      type: string
+    authors:
+      type: "string"
+    teachers:
+      type: "number"
+    status: 
+      type: string 
+      enum: [ACTIVE, INACTIVE]
+    startDate:
+      type: string
+    endDate:
+      type: string
+    minAge:
+      type: number
+    lessons: 
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: number
+          name:
+            type: string
+          title:
+            type: string
+          lessonImageUrl:
+            type: string
+          numberOfQuizzes: 
+            type: number
+          status: 
+            type: string  
+            enum: [ACTIVE, INACTIVE]
+
+AdminCourseChildren:
+  type: array
+  items:
+    type: object
+    properties:
+      id: 
+        type: string
+      avatarUrl:
+        type: string
+      name:
+        type: string
+      username:
+        type: string
+      userCourseProcess:
+        type: string
+      status:
+        type: string
+        enum: [APPROVAL, PENDING]
+  example:
+    - id: string,
+      avatarUrl: string,
+      name: string,
+      username: string,
+      userCourseProcess: string,
+      status: APPROVAL
+    - id: string,
+      avatarUrl: string,
+      name: string,
+      username: string,
+      userCourseProcess: string,
+      status: PENDING
+
+AdminCourseTeachers:
+  type: array
+  items:
+    type: object
+    properties: 
+      id: 
+        type: string
+      avatarUrl:
+        type: string
+      name:
+        type: string
+      username:
+        type: string
+      status: 
+        type: string  
+        enum: []
+
+
+CreateLesson: 
+  type: object
+  properties:
+    name:
+      type: string
+    status:
+      type: string
+    lessonDesc:
+      type: string
+    shortMessage:
+      type: string
+    fileId:
+      type: string
+    resources:
+      type: array
+      items:
+        type: object
+        properties:
+          resourceType:
+            type: string
+          title:
+            type: string
+          subResources:
+            type: array
+            items:
+              type: object
+              properties:
+                title:
+                  type: string
+                extraData:
+                  extraDataType:
+                    type: string
+                  content:
+                    type: string
+                  example:
+                    type: string
+

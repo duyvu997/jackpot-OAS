@@ -1,0 +1,20 @@
+WeeklyHourAudit:
+  type: object
+  properties:
+    username:
+      type: string
+    weekHours:
+      type: array
+      items: integer
+    total:
+      type: number
+    completedCourse:
+      type: number
+    completedLesson:
+      type: number
+  example:
+    - username: soda
+      weekHours: [1 2 2 2 2 3 3]
+      total: 15
+      completedCourse: 1
+      completedLesson: 10
